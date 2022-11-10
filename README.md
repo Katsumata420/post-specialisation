@@ -22,6 +22,7 @@ Prepare follwing python libs.
 - numpy
   - 1.23.4
 
+## Run Code
 ### Configuring the Tool
 
 The post-specialisation tool reads all the experiment config parameters from the ```experiment_parameters.cfg``` file in the root directory. An alternative config file can be provided as the first (and only) argument to ```code/post-specialisation.py```. 
@@ -39,6 +40,11 @@ The config file specifies the following:
 - Right now, we provide support in the config file only for the best-performing max-margin loss function, but it should be fairly easy to customise the objective function using some of the Keras pre-built losses.
 
 ### Running Experiments
+If python3, use `./post-specialisation.py`
+
+```python post-specialisation.py config/experiment_parameters.cfg```
+
+If python2, use `code/post-specialisation.py`.
 
 ```python code/post-specialisation.py config/experiment_parameters.cfg```
 
