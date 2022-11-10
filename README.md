@@ -1,9 +1,26 @@
 # Post-Specialisation
 Post-Specialisation: Retrofitting Vectors of Words Unseen in Lexical Resources (Vulić et al., NAACL-HLT 2018)
 
-This repository contains the code and data for the post-specialisation method in the NAACL-HLT 2018 paper. The method is implemented in [Keras](https://keras.io/) (Python 2.7) 
+This repository contains the code and data for the post-specialisation method in the NAACL-HLT 2018 paper. The method is implemented in [Keras](https://keras.io/) (~~Python 2.7~~ Python3.10) 
 
 Contact: Ivan Vulić (iv250@cam.ac.uk)
+
+## Requirements
+
+- Python: 3.10.4
+- CUDA: 11.6
+
+### Python Library
+Prepare follwing python libs.
+
+- tensorflow
+  - v2.10.0
+- keras (Keras comes packaged with tf2.)
+  - v2.10.0
+- scikit-learn
+  - v1.1.3
+- numpy
+  - 1.23.4
 
 ### Configuring the Tool
 

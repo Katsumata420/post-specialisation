@@ -1,12 +1,10 @@
-import ConfigParser
-import sys, os, codecs, operator, time
-reload(sys)
-sys.setdefaultencoding('utf8')
+import configparser
+import sys, os, time
+import logging
 
 import keras
 import tensorflow as tf
 import numpy as np
-import theano
 import random
 
 from sklearn.preprocessing import normalize
@@ -14,7 +12,6 @@ from sklearn.preprocessing import normalize
 from keras.layers import Input, Dense
 from keras.models import Model, Sequential
 from keras import regularizers
-from keras.layers.normalization import BatchNormalization
 from keras.layers.core import Dense, Activation
 from keras import losses
 from keras import backend as K
@@ -25,12 +22,13 @@ def swish(x):
         return (x*K.sigmoid(x))
 
 get_custom_objects().update({'swish': Activation(swish)})
-lrelu = keras.layers.advanced_activations.LeakyReLU(alpha=0.5)
-prelu = keras.layers.advanced_activations.PReLU(
+lrelu = keras.layers.LeakyReLU(alpha=0.5)
+prelu = keras.layers.PReLU(
     alpha_initializer='zero', weights=None)
-elu = keras.layers.advanced_activations.ELU(alpha=1.0)
+elu = keras.layers.ELU(alpha=1.0)
 
-tf.logging.set_verbosity(tf.logging.ERROR)
+logger = tf.get_logger()
+logger.setLevel(logging.ERROR)
 
 class ExperimentRun:
     """
@@ -46,13 +44,13 @@ class ExperimentRun:
         specialiastion), as well as the hyperparameters of the
         Post-Specialisation procedure (as detailed in the NAACL-HLT 2018 paper).
         """
-        self.config = ConfigParser.RawConfigParser()
+        self.config = configparser.RawConfigParser()
         try:
             self.config.read(config_filepath)
         except:
-            print "Couldn't read config file from", config_filepath
+            print("Couldn't read config file from", config_filepath)
             return None
-        print "Loading full distributional vectors..."
+        print("Loading full distributional vectors...")
         distributional_vectors_filepath = self.config.get(
             "data", "distributional_vectors"
         )
@@ -76,7 +74,7 @@ class ExperimentRun:
         xtrain_spec_path = self.config.get(
             "data", "specialised_training_data")
 
-        print "Loading training data..."
+        print("Loading training data...")
         xtrain_distrib = load_word_vectors(xtrain_distrib_path)
         xtrain_spec = load_word_vectors(xtrain_spec_path)
         # Get the set of seen words (all others are unseen)
@@ -97,8 +95,8 @@ class ExperimentRun:
         self.load_experiment_hyperparameters()
 
         self.embedding_size = random.choice(
-            self.distributional_vectors.values()).shape[0]
-        self.all_words = self.distributional_vectors.keys()
+            list(self.distributional_vectors.values())).shape[0]
+        self.all_words = list(self.distributional_vectors.keys())
         self.vocabulary_size = len(self.all_words)
         # Now initialise the model
         self.initialise_model()
@@ -151,7 +149,7 @@ class ExperimentRun:
         This method computes max-margin loss
         """
         cost = 0.0
-        for i in xrange(self.negative_samples):
+        for i in range(self.negative_samples):
             new_true = tf.random_shuffle(y_true)
             cost += K.maximum(
                 self.margin - y_true * y_pred + new_true * y_pred, 0.)
@@ -212,7 +210,7 @@ class ExperimentRun:
         for item in self.all_words:
             counter += 1
             if counter % 5000 == 0:
-                print "Mapped: ", str(counter), "/", str(self.vocabulary_size)
+                print("Mapped: ", str(counter), "/", str(self.vocabulary_size))
             seen_vector = None
             if item in self.seen_words:
                 seen_vector_a = np.array(self.xtrain_spec[item],dtype='float32')
@@ -259,7 +257,7 @@ def load_word_vectors(file_destination):
     It loads the dictionary of word vectors and prints its size and the vector
     dimensionality.
     """
-    print "Loading vectors from", file_destination
+    print("Loading vectors from", file_destination)
     input_dic = {}
 
     with open(file_destination, "r") as in_file:
@@ -274,7 +272,7 @@ def load_word_vectors(file_destination):
         norm = np.linalg.norm(vector)
         input_dic[dkey] = vector/norm
 
-    print len(input_dic), "vectors loaded from", file_destination
+    print(len(input_dic), "vectors loaded from", file_destination)
 
     return input_dic
 
@@ -301,7 +299,7 @@ def main():
     try:
         config_filepath = sys.argv[1]
     except:
-        print "\nUsing the default config file: experiment_parameters.cfg\n"
+        print("\nUsing the default config file: experiment_parameters.cfg\n")
         config_filepath = "experiment_parameters.cfg"
 
     run_experiment(config_filepath)
