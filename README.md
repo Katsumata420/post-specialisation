@@ -23,6 +23,23 @@ Prepare follwing python libs.
   - 1.23.4
 
 ## Run Code
+### Prepare w2v data as for seen words
+This script needs following data.
+
+1. distributional w2v vectors (original vector)
+2. original w2v vectors only for seen words
+3. specialised w2v vectors only for seen words
+
+If you have distributional original w2v vector and specialised vector (including seen words and unseen words), you must prepare 2th and 3rd data.
+To prepare 2th and 3rd data, use `code/prepare_training_data.py`.
+
+```bash
+$ python code/prepare_training_data.py \
+  --original /path/to/original_vectors.txt \
+  --specialized /path/to/specialised_vectors.txt \
+  --output-dir /path/to/save-dir
+```
+
 ### Configuring the Tool
 
 The post-specialisation tool reads all the experiment config parameters from the ```experiment_parameters.cfg``` file in the root directory. An alternative config file can be provided as the first (and only) argument to ```code/post-specialisation.py```. 
