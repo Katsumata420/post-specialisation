@@ -150,7 +150,7 @@ class ExperimentRun:
         """
         cost = 0.0
         for i in range(self.negative_samples):
-            new_true = tf.random_shuffle(y_true)
+            new_true = tf.random.shuffle(y_true)
             cost += K.maximum(
                 self.margin - y_true * y_pred + new_true * y_pred, 0.)
 
@@ -221,7 +221,7 @@ class ExperimentRun:
             vector = [self.distributional_vectors[key]]
             vector = np.asarray(vector)
             # Final transformation
-            encoded_vector_a = self.model.predict(vector)
+            encoded_vector_a = self.model.predict(vector, verbose=0)
             encoded_vector_nn = encoded_vector_a[0]
             # Now normalize the vector
             encoded_vector_n = normalize(encoded_vector_nn.reshape(1,-1), norm='l2', axis=1)
@@ -285,10 +285,7 @@ def run_experiment(config_filepath):
 
     current_experiment.post_specialisation()
 
-    os.system("mkdir -p results")
 
-    #print_word_vectors(current_experiment.word_vectors,
-    #                   current_experiment.output_filepath)
 
 def main():
     """
