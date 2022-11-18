@@ -204,6 +204,7 @@ class ExperimentRun:
 
         # The last step is to map everything and output the vector space
         os.system("mkdir -p results")
+        self.model.save(os.path.join("results", "temp_model.tf"))
         fenc = open(self.output_filepath, "w")
         counter = 0
 
